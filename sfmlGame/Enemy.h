@@ -1,14 +1,18 @@
 #pragma once
 #include<SFML/Graphics.hpp>
+#include"PBullet.h"
 class Enemy
 {
 public:
-	Enemy(int hi);
+	int enemyshipX;
+	int enemyshipY;
+	Enemy();
 	~Enemy();
+
+	sf::Sprite redship;
 	void draw(sf::RenderWindow& window);
 	void update();
 private:
 	sf::Texture enemyship;
-	sf::Sprite redship;
 };
 

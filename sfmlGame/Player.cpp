@@ -14,7 +14,6 @@ Player::Player(sf::Vector2f hi , int W , int H ,sf::Vector2f position)
 void Player::update()
 {
 	spaceship01.setTextureRect(sf::IntRect(shipposition.x * 1, shipposition.y * 1, shipposition.x, shipposition.y));
-	spaceship01.setTextureRect(sf::IntRect(shipposition.x * 1, shipposition.y * 1, shipposition.x, shipposition.y));
 	spaceship01.setScale(1.5,1.5);
 }
 
@@ -26,26 +25,28 @@ void Player::draw(sf::RenderWindow& window)
 	window.draw(spaceship01);
 }
 
-void Player::move()
+void Player::move(float deltatime)
 {
+	
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)&& spaceship01.getPosition().x < W - 60)
 			{
-				spaceship01.move(0.3f, 0.0f);
+				dx = 1;
 				spaceship01.setTextureRect(sf::IntRect(shipposition.x * 2, shipposition.y * 2, shipposition.x, shipposition.y));
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && spaceship01.getPosition().x > 5)
 			{
-				spaceship01.move(-0.3f, 0.f);
+				dx = -1;
 				spaceship01.setTextureRect(sf::IntRect(shipposition.x * 0, shipposition.y * 2, shipposition.x, shipposition.y));
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && spaceship01.getPosition().y > 10)
 			{
-				spaceship01.move(0.f, -0.3f);
+				dy = -1;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && spaceship01.getPosition().y < H - 70)
 			{
-				spaceship01.move(0.f, 0.3f);
+				dy = 1;
 			}
+			
 			if (spaceship01.getPosition().x > W)
 			{
 				spaceship01.setPosition(0, spaceship01.getPosition().y);
@@ -54,6 +55,12 @@ void Player::move()
 			{
 				spaceship01.setPosition(W, spaceship01.getPosition().y);
 			}
+			movement.x = dx * speed * deltatime;
+			movement.y = dy * speed * deltatime;
+			spaceship01.move(movement);
+			dx = 0;
+			dy = 0;
+			
 }
 const sf::Vector2f Player::spaceship01_position()
 {

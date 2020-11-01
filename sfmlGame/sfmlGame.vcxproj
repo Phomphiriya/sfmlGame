@@ -153,6 +153,7 @@
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="wallstage1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBullet.h" />
@@ -160,7 +161,9 @@
     <ClInclude Include="PBullet.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="Source.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="wallstage1.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

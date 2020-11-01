@@ -1,12 +1,9 @@
 #include "PBullet.h"
 
-PBullet::PBullet(int W, int H)
+PBullet::PBullet()
 {
 	laser.loadFromFile("Shoot/Lasersung.png");
 	PLaser.setTexture(laser);
-	
-
-	
 }
 
 PBullet::~PBullet()
@@ -26,7 +23,5 @@ void PBullet::draw(sf::RenderWindow& window)
 	window.draw(PLaser);
 }
 
-void PBullet::move()
-{
-}
+
 

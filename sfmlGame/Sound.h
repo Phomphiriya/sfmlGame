@@ -4,7 +4,7 @@
 class Sound
 {
 public:
-	Sound(int hi);
+	Sound();
 	~Sound();
 public:
 	sf::Sound shoot_effect;

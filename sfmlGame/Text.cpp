@@ -1,5 +1,5 @@
 #include "Text.h"
-Text::Text(int i) 
+Text::Text() 
 {
 	font.loadFromFile("font.ttf");
 }
@@ -18,6 +18,4 @@ void Text::text_1(float number, sf::Vector2f position , sf::RenderWindow &window
 	text1.setCharacterSize(60);
 	text1.setString(num.str());
 	window.draw(text1);
-	
-
 }

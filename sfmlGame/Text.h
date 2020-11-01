@@ -7,7 +7,7 @@ using namespace std;
 class Text
 {
 public:
-	Text(int i);
+	Text();
 	~Text();
 	void text_1(float number, sf::Vector2f position, sf::RenderWindow& window);
 private:
