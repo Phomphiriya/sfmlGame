@@ -19,7 +19,7 @@ void wallstage1::update(float deltatime)
 	if(offset >= speed)
 	{
 		offset -= speed;
-		i_bg-=3;
+		i_bg-=2;
 	}
 	if (i_bg <= 0)
 	{

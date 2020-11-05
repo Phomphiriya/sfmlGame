@@ -9,7 +9,7 @@ class Text
 public:
 	Text();
 	~Text();
-	void text_1(float number, sf::Vector2f position, sf::RenderWindow& window);
+	void text_1(float number, sf::Vector2f position, sf::RenderWindow& window , string message);
 private:
 	sf::Font font;
 };

@@ -16,9 +16,6 @@
 const int W = 607;
 const int H = 1000;
 
-
-
-
 int main()
 {
 	sf::Clock clock;
@@ -34,25 +31,36 @@ int main()
 	window.setFramerateLimit(60);
 
 	//sf::Texture
-	sf::Texture Boss1;
+	/*sf::Texture Boss1;
 	Boss1.loadFromFile("Spaceship/boos1new.png");
-	sf::Sprite bossstage1(Boss1);
+	sf::Sprite bossstage1(Boss1);*/
+	
 	sf::Texture playerlaser;
 	playerlaser.loadFromFile("Shoot/Laser.png");
+
+	sf::Texture HPBar;
+	HPBar.loadFromFile("HP/HPYOU.png");
+
+	sf::RectangleShape HPointBar(sf::Vector2f(324,50));
+	HPointBar.setTexture(&HPBar);
+	HPointBar.setPosition(273, 10);
 	
 	
 	//-----------Boss
-	sf::Vector2f bossspawnPoint = { 120.f,-150.f };
+	/*sf::Vector2f bossspawnPoint = { 120.f,-150.f };
 	bossstage1.setPosition(bossspawnPoint);
-	bossstage1.setScale(0.5, 0.5);
+	bossstage1.setScale(0.5, 0.5);*/
 	
 	//----------Enemy&Bullet
 	std::vector<Enemy> enemies;
 	std::vector<PBullet> PBullets;
 	int enemySpawnTimer = 0;
 	int shootTimer = 0;
-	
-	
+	int EnemyKilled = 0;
+	float TimeScore = 0;
+	int HP = 10;
+
+
 	Sound.intro.play();
 	// Start game loop
 	while (window.isOpen())
@@ -62,6 +70,7 @@ int main()
 		sf::Event e;
 		float deltatime = time.asSeconds();
 		float totaltime = 0;
+		TimeScore += deltatime;
 		while (window.pollEvent(e));
 		{
 			if (e.type == e.Closed)
@@ -86,22 +95,22 @@ int main()
 		}
 		for (size_t i = 0; i < PBullets.size(); i++)
 		{
-
-
 			if (PBullets[i].PLaser.getPosition().y <= 0)
 				PBullets.erase(PBullets.begin() + i);
 		}
 		for (size_t i = 0; i < PBullets.size(); i++)
 		{
-			PBullets[i].PLaser.move(0.f, -10.f);
+			PBullets[i].PLaser.move(0.f, -8.f);
 
 		}
+
 		//-----------ENEMY
 		if (enemySpawnTimer < 50)
 			enemySpawnTimer++;
+
 		if (enemySpawnTimer >= 50)
 		{
-			Enemy1.redship.setPosition( rand() % int(window.getSize().x - Enemy1.redship.getGlobalBounds().width) + Enemy1.redship.getGlobalBounds().width  , 0.f);
+			Enemy1.redship.setPosition( rand() % int((window.getSize().x - Enemy1.redship.getGlobalBounds().width) - Enemy1.redship.getGlobalBounds().width) + Enemy1.redship.getGlobalBounds().width  , 0.f);
 			enemies.push_back(Enemy(Enemy1));
 			enemySpawnTimer = 0;
 		}
@@ -112,7 +121,7 @@ int main()
 		}
 		for (size_t i = 0; i < enemies.size(); i++)
 		{
-			enemies[i].redship.move(0, 3.f);
+			enemies[i].redship.move(sin(i), 5.f);
 		}
 		wallstage1.update(deltatime);
 
@@ -125,8 +134,22 @@ int main()
 				{
 					PBullets.erase(PBullets.begin() + i);
 					enemies.erase(enemies.begin() + k);
+					EnemyKilled++;
 					break;
 				}
+
+			}
+		}
+		sf::RectangleShape PlayerHP(sf::Vector2f(30 * HP, 30));
+		PlayerHP.setFillColor(sf::Color(90, 0, 0));
+		PlayerHP.setPosition(290, 23);
+
+		for (size_t H = 0; H < enemies.size(); H++)
+		{
+			if (Player1.spaceship01.getGlobalBounds().intersects(enemies[H].redship.getGlobalBounds()))
+			{
+				HP--;
+				enemies.erase(enemies.begin() + H);
 			}
 		}
 
@@ -140,7 +163,6 @@ int main()
 		Player1.move(deltatime);
 		wallstage1.draw(window);
 
-		//window.draw(swall);
 		for (size_t i = 0; i < enemies.size(); i++)
 		{
 			window.draw(enemies[i].redship);
@@ -149,14 +171,15 @@ int main()
 		{
 			window.draw(PBullets[i].PLaser);
 		}
-		//Enemy1.draw(window);
+
+		window.draw(PlayerHP);
+		window.draw(HPointBar);
 		Player1.draw(window);
+		Text1.text_1((int)TimeScore, sf::Vector2f(0.f,0.f), window , (string) "Time Score : ");
+		Text2.text_1((int)EnemyKilled, sf::Vector2f(0.f, 18.f), window , (string) "Killed : ");
 		window.display();
 		
 		//window.draw(bossstage1);
-		
-		//Text1.text_1(Player1.spaceship01_position().x, sf::Vector2f(90.0f, 250.0), window);
-		//Text2.text_1(Player1.spaceship01_position().y, sf::Vector2f(90.0f, 200.0f), window);
 		
 	}
 	return 0;

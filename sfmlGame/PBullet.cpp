@@ -22,6 +22,3 @@ void PBullet::draw(sf::RenderWindow& window)
 {
 	window.draw(PLaser);
 }
-
-
-

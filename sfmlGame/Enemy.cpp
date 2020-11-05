@@ -20,7 +20,6 @@ void Enemy::draw(sf::RenderWindow &window)
 
 void Enemy::update()
 {
-	redship.setScale(1.2, 1.2);
+	redship.setScale(1.25, 1.25);
 	redship.setTextureRect(sf::IntRect(enemyshipX * 1, enemyshipY*0, enemyshipX, enemyshipY));
-	//redship.setTextureRect(sf::IntRect(enemyshipX, enemyshipY, enemyshipX, enemyshipY));
 }
