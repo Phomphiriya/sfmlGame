@@ -34,18 +34,21 @@ int main()
 	/*sf::Texture Boss1;
 	Boss1.loadFromFile("Spaceship/boos1new.png");
 	sf::Sprite bossstage1(Boss1);*/
-	
-	sf::Texture playerlaser;
-	playerlaser.loadFromFile("Shoot/Laser.png");
 
 	sf::Texture HPBar;
 	HPBar.loadFromFile("HP/HPYOU.png");
-
-	sf::RectangleShape HPointBar(sf::Vector2f(324,50));
+	sf::RectangleShape HPointBar(sf::Vector2f(330.0f,45.0f));
 	HPointBar.setTexture(&HPBar);
-	HPointBar.setPosition(273, 10);
-	
-	
+	HPointBar.setPosition(270, 10);
+
+	//------------Gameover---------------------------
+	sf::Texture Gameover;
+	Gameover.loadFromFile("Gameover/Oicon.png");
+	sf::RectangleShape Overicon(sf::Vector2f(400, 200));
+	Overicon.setTexture(&Gameover);
+	Overicon.setOrigin(200, 100);
+	Overicon.setPosition(303, 500);
+	 
 	//-----------Boss
 	/*sf::Vector2f bossspawnPoint = { 120.f,-150.f };
 	bossstage1.setPosition(bossspawnPoint);
@@ -60,12 +63,19 @@ int main()
 	float TimeScore = 0;
 	int HP = 10;
 
+	//------------mouse
+	sf::Texture mouse;
+	mouse.loadFromFile("Wallpaper/mouse.png");
+	window.setMouseCursorVisible(false);
+	sf::Sprite cursorSprite(mouse);
+	cursorSprite.setScale(0.10f, 0.10f);
 
 	Sound.intro.play();
 	// Start game loop
 	while (window.isOpen())
 	{
-		
+
+		cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 		sf::Time time = clock.restart();
 		sf::Event e;
 		float deltatime = time.asSeconds();
@@ -84,9 +94,9 @@ int main()
 		}
 
 		//----------SHOOTING
-		if (shootTimer < 15)
+		if (shootTimer < 20)
 			shootTimer++;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && shootTimer >= 15)
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && shootTimer >= 20)
 		{
 			Sound.shoot_effect.play();
 			PBullet1.update(Player1.spaceship01_position());
@@ -137,12 +147,11 @@ int main()
 					EnemyKilled++;
 					break;
 				}
-
 			}
 		}
 		sf::RectangleShape PlayerHP(sf::Vector2f(30 * HP, 30));
 		PlayerHP.setFillColor(sf::Color(90, 0, 0));
-		PlayerHP.setPosition(290, 23);
+		PlayerHP.setPosition(295, 18);
 
 		for (size_t H = 0; H < enemies.size(); H++)
 		{
@@ -172,11 +181,20 @@ int main()
 			window.draw(PBullets[i].PLaser);
 		}
 
+
+		window.draw(cursorSprite);
 		window.draw(PlayerHP);
 		window.draw(HPointBar);
 		Player1.draw(window);
 		Text1.text_1((int)TimeScore, sf::Vector2f(0.f,0.f), window , (string) "Time Score : ");
-		Text2.text_1((int)EnemyKilled, sf::Vector2f(0.f, 18.f), window , (string) "Killed : ");
+		Text2.text_1((int)EnemyKilled, sf::Vector2f(0.f, 20.f), window , (string) "Killed : ");
+		if (HP <= 0)
+		{
+			window.clear();
+			Sound.intro.pause();
+			window.draw(Overicon);
+		}
+
 		window.display();
 		
 		//window.draw(bossstage1);

@@ -160,10 +160,14 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="PBullet.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Source.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="wallstage1.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="sfmlGame.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -60,7 +60,6 @@ void Player::move(float deltatime)
 			spaceship01.move(movement);
 			dx = 0;
 			dy = 0;
-			
 }
 const sf::Vector2f Player::spaceship01_position()
 {
