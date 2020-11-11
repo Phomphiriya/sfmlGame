@@ -20,7 +20,7 @@ int main()
 {
 	sf::Clock clock;
 	srand(time(NULL));
-	Enemy Enemy1;
+	Enemy Enemy1(3);
 	PBullet PBullet1;
 	wallstage1 wallstage1;
 	Sound Sound;
@@ -115,10 +115,10 @@ int main()
 		}
 
 		//-----------ENEMY
-		if (enemySpawnTimer < 50)
+		if (enemySpawnTimer < 70)
 			enemySpawnTimer++;
 
-		if (enemySpawnTimer >= 50)
+		if (enemySpawnTimer >= 70)
 		{
 			Enemy1.redship.setPosition( rand() % int((window.getSize().x - Enemy1.redship.getGlobalBounds().width) - Enemy1.redship.getGlobalBounds().width) + Enemy1.redship.getGlobalBounds().width  , 0.f);
 			enemies.push_back(Enemy(Enemy1));
@@ -143,14 +143,24 @@ int main()
 				if (PBullets[i].PLaser.getGlobalBounds().intersects(enemies[k].redship.getGlobalBounds()))
 				{
 					PBullets.erase(PBullets.begin() + i);
-					enemies.erase(enemies.begin() + k);
-					EnemyKilled++;
+					enemies[k].EnemyHP--;
+
+					if (enemies[k].EnemyHP == 0)
+					{
+						enemies.erase(enemies.begin() + k);
+						EnemyKilled++;
+					}
 					break;
 				}
+				
 			}
 		}
+
+		int R = rand()% 1000;
+		int G = rand()% 1000;
+		int B = rand()% 1000;
 		sf::RectangleShape PlayerHP(sf::Vector2f(30 * HP, 30));
-		PlayerHP.setFillColor(sf::Color(90, 0, 0));
+		PlayerHP.setFillColor(sf::Color(R,G,B));
 		PlayerHP.setPosition(295, 18);
 
 		for (size_t H = 0; H < enemies.size(); H++)
@@ -174,7 +184,7 @@ int main()
 
 		for (size_t i = 0; i < enemies.size(); i++)
 		{
-			window.draw(enemies[i].redship);
+			enemies[i].draw(window);
 		}
 		for (size_t i = 0; i < PBullets.size(); i++)
 		{
