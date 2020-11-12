@@ -9,6 +9,8 @@ public:
 public:
 	sf::Sound shoot_effect;
 	sf::Music intro;
+	sf::Music Game_over;
 private:
 	sf::SoundBuffer shoot_effect_buffer;
+	
 };
