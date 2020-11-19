@@ -2,7 +2,7 @@
 
 wallstage1::wallstage1()
 {
-	tbgstage1.loadFromFile("Wallpaper/wallstage1.png");
+	tbgstage1.loadFromFile("Wallpaper/wallnew01.png");
 	bgstage1.setTexture(tbgstage1);
 }
 
@@ -21,7 +21,7 @@ void wallstage1::update(float deltatime)
 	}
 	if (i_bg <= 0)
 	{
-		i_bg = 1803;
+		i_bg = 4000;
 	}
 }
 void wallstage1::draw(sf::RenderWindow& window)

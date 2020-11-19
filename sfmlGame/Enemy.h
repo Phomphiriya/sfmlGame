@@ -13,7 +13,11 @@ public:
 	void draw(sf::RenderWindow& window);
 	void update();
 	int EnemyHP;
+	float dx = 1;
+	float dy = 0;
+	bool dead = false;
 private:
 	sf::Texture enemyship;
+	sf::Texture explosion;
 };
 

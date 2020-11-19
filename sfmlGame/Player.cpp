@@ -7,7 +7,6 @@ Player::Player(sf::Vector2f hi , int W , int H ,sf::Vector2f position)
 	spaceship01.setTexture(ship);
 	shipposition.x = ship.getSize().x / 3;
 	shipposition.y = ship.getSize().y / 3;
-	sf::Vector2f spawnPoint = { 280.f,830.f };
 	spaceship01.setPosition(position);
 }
 
@@ -27,7 +26,6 @@ void Player::draw(sf::RenderWindow& window)
 
 void Player::move(float deltatime)
 {
-	
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)&& spaceship01.getPosition().x < W - 60)
 			{
 				dx = 1;
