@@ -11,7 +11,7 @@ public:
 
 private:
 	sf::Texture tbgstage1;
-	int i_bg = 5000;
+	float i_bg = 5000;
 	float offset = 0;
 	float speed = 0.01;
 };

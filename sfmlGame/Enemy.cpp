@@ -9,7 +9,7 @@ Enemy::Enemy(int EnemyHP):EnemyHP(EnemyHP)
 	this->enemyshipY = enemyship.getSize().y/1;
 	HPbar.setFillColor(sf::Color::Red);
 	//explosion.loadFromFile("Explosion/KillEffect.png");
-	redship.setScale(1.7, 1.7);
+	redship.setScale(2, 2);
 	HPbar.setOrigin(sf::Vector2f(redship.getPosition().x / 2, redship.getPosition().y / 2 ));
 }
 

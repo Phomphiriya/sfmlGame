@@ -83,6 +83,12 @@ int main()
 	sf::Sprite cursorSprite(mouse);
 	cursorSprite.setScale(0.10f, 0.10f);
 
+	//comet
+	sf::Texture Texture_Comet_big;
+	sf::Texture Texture_Comet_small;
+	Texture_Comet_big.loadFromFile("Spaceship/BigComet.png");
+	Texture_Comet_small.loadFromFile("Spaceship/SmallComet.png");
+
 	Sound.intro.play();
 
 	// Start game loop
@@ -161,9 +167,29 @@ int main()
 			}
 
 			//-----------ENEMY
-			if (enemySpawnTimer < 100 && cs == true)
-				enemySpawnTimer++;
+			if(cometSpawnTimer < 60 && cs == true)
+				cometSpawnTimer++;
+			{
+				if (cometSpawnTimer >= 60)
+				{
+					Comets.push_back(Comet(rand() % 2 , rand() % window.getSize().x , &Texture_Comet_big, &Texture_Comet_small));
+					cometSpawnTimer = 0;
+				}
+				for (size_t i = 0; i < Comets.size(); i++)
+				{
+					if (Comets[i].Comet_obj.getPosition().y > window.getSize().y)
+						Comets.erase(Comets.begin() + i);
+				}
+				for (size_t i = 0; i < Comets.size(); i++)
+				{
+					Comets[i].Comet_obj.move(cos(i), 5.f);
+				}
+			}
 
+			if (TimeScore >= 30)
+			{
+				if (enemySpawnTimer < 100 )
+					enemySpawnTimer++;
 				if (enemySpawnTimer >= 100)
 				{
 					Enemy1.redship.setPosition(rand() % int((window.getSize().x - Enemy1.redship.getGlobalBounds().width) - Enemy1.redship.getGlobalBounds().width) + Enemy1.redship.getGlobalBounds().width, 0.f);
@@ -186,13 +212,15 @@ int main()
 					}
 					if (cos(i) >= 0 < 1)
 					{
-						enemies[i].dx = 0;
+						enemies[i].dx = 1;
 					}
 					if (cos(i) == 1)
 					{
 						enemies[i].dx = 2;
 					}
 				}
+			}
+
 			wallstage1.update(deltatime);
 
 			//-----------Collision
@@ -216,6 +244,26 @@ int main()
 				}
 			}
 
+			for (size_t i = 0; i < PBullets.size(); i++)
+			{
+				for (size_t k = 0; k < Comets.size(); k++)
+				{
+					if (PBullets[i].PLaser.getGlobalBounds().intersects(Comets[k].Comet_obj.getGlobalBounds()))
+					{
+						PBullets.erase(PBullets.begin() + i);
+						Comets[k].CometHP--;
+
+						if (Comets[k].CometHP == 0)
+						{
+							Comets.erase(Comets.begin() + k);
+							EnemyKilled++;
+						}
+						break;
+					}
+
+				}
+			}
+
 			int R = rand() % 1000;
 			int G = rand() % 1000;
 			int B = rand() % 1000;
@@ -231,12 +279,25 @@ int main()
 					enemies.erase(enemies.begin() + H);
 				}
 			}
+			for (size_t H = 0; H < Comets.size(); H++)
+			{
+				if (Player1.spaceship01.getGlobalBounds().intersects(Comets[H].Comet_obj.getGlobalBounds()))
+				{
+					HP--;
+					Comets.erase(Comets.begin() + H);
+				}
+			}
+
 			Player1.update();
 			for (size_t i = 0; i < enemies.size(); i++)
 			{
 				enemies[i].update();
 			}
-
+			for (size_t i = 0; i < Comets.size(); i++)
+			{
+				Comets[i].update(deltatime);
+			}
+			
 			Player1.move(deltatime);
 
 
@@ -250,6 +311,10 @@ int main()
 			for (size_t i = 0; i < PBullets.size(); i++)
 			{
 				window.draw(PBullets[i].PLaser);
+			}
+			for (size_t i = 0; i < Comets.size(); i++)
+			{
+				Comets[i].draw(window);
 			}
 
 			window.draw(cursorSprite);

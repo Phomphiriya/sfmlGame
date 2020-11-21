@@ -2,7 +2,7 @@
 
 wallstage1::wallstage1()
 {
-	tbgstage1.loadFromFile("Wallpaper/wallnew01.png");
+	tbgstage1.loadFromFile("Wallpaper/walljingna.png");
 	bgstage1.setTexture(tbgstage1);
 }
 
@@ -16,8 +16,8 @@ void wallstage1::update(float deltatime)
 	offset += deltatime;
 	if (offset >= speed)
 	{
+		i_bg -= 1.5;
 		offset -= speed;
-		i_bg -= 2;
 	}
 	if (i_bg <= 0)
 	{
