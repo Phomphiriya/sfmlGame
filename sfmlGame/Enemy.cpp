@@ -3,12 +3,14 @@
 
 Enemy::Enemy(int EnemyHP):EnemyHP(EnemyHP)
 {
-	enemyship.loadFromFile("Spaceship/enemyship02.png");
+	enemyship.loadFromFile("Spaceship/newenemy.png");
 	redship.setTexture(enemyship);
 	this->enemyshipX = enemyship.getSize().x/3;
 	this->enemyshipY = enemyship.getSize().y/1;
 	HPbar.setFillColor(sf::Color::Red);
-	explosion.loadFromFile("Explosion/KillEffect.png");
+	//explosion.loadFromFile("Explosion/KillEffect.png");
+	redship.setScale(1.7, 1.7);
+	HPbar.setOrigin(sf::Vector2f(redship.getPosition().x / 2, redship.getPosition().y / 2 ));
 }
 
 Enemy::~Enemy()
@@ -24,8 +26,6 @@ void Enemy::draw(sf::RenderWindow &window)
 void Enemy::update()
 {
 	HPbar.setSize(sf::Vector2f(15 * EnemyHP, 5));
-	HPbar.setPosition(sf::Vector2f(redship.getPosition().x -1.5, redship.getPosition().y-15));
-	redship.setScale(1.25, 1.25);
+	HPbar.setPosition(sf::Vector2f(redship.getPosition().x+1, redship.getPosition().y-5));
 	redship.setTextureRect(sf::IntRect(enemyshipX * dx, enemyshipY*0, enemyshipX, enemyshipY));
-
 }

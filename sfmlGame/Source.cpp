@@ -9,6 +9,7 @@
 #include "Text.h"
 #include "Sound.h"
 #include "Enemy.h"
+#include "Comet.h"
 #include "PBullet.h"
 #include "wallstage1.h"
 #include <vector>
@@ -67,7 +68,9 @@ int main()
 	//----------Enemy&Bullet
 	std::vector<Enemy> enemies;
 	std::vector<PBullet> PBullets;
+	std::vector<Comet> Comets;
 	int enemySpawnTimer = 0;
+	int cometSpawnTimer = 0;
 	int shootTimer = 0;
 	int EnemyKilled = 0;
 	float TimeScore = 0;
@@ -81,6 +84,7 @@ int main()
 	cursorSprite.setScale(0.10f, 0.10f);
 
 	Sound.intro.play();
+
 	// Start game loop
 	bool check = false;
 	float count = 0;
@@ -160,34 +164,35 @@ int main()
 			if (enemySpawnTimer < 100 && cs == true)
 				enemySpawnTimer++;
 
-			if (enemySpawnTimer >= 100)
-			{
-				Enemy1.redship.setPosition(rand() % int((window.getSize().x - Enemy1.redship.getGlobalBounds().width) - Enemy1.redship.getGlobalBounds().width) + Enemy1.redship.getGlobalBounds().width, 0.f);
-				enemies.push_back(Enemy(Enemy1));
-				enemySpawnTimer = 0;
-			}
-			for (size_t i = 0; i < enemies.size(); i++)
-			{
-				if (enemies[i].redship.getPosition().y > window.getSize().y)
-					enemies.erase(enemies.begin() + i);
-			}
-			for (size_t i = 0; i < enemies.size(); i++)
-			{
-				enemies[i].redship.move(cos(i), 5.f);
-				//std::cout << cos(i) << std::endl;
-				if (cos(i) <= 0)
+				if (enemySpawnTimer >= 100)
 				{
-					enemies[i].dx = 0;
+					Enemy1.redship.setPosition(rand() % int((window.getSize().x - Enemy1.redship.getGlobalBounds().width) - Enemy1.redship.getGlobalBounds().width) + Enemy1.redship.getGlobalBounds().width, 0.f);
+					enemies.push_back(Enemy(Enemy1));
+
+					enemySpawnTimer = 0;
 				}
-				if (cos(i) >= 0 < 1)
+				for (size_t i = 0; i < enemies.size(); i++)
 				{
-					enemies[i].dx = 0;
+					if (enemies[i].redship.getPosition().y > window.getSize().y)
+						enemies.erase(enemies.begin() + i);
 				}
-				if (cos(i) == 1)
+				for (size_t i = 0; i < enemies.size(); i++)
 				{
-					enemies[i].dx = 2;
+					enemies[i].redship.move(cos(i), 5.f);
+					//std::cout << cos(i) << std::endl;
+					if (cos(i) <= 0)
+					{
+						enemies[i].dx = 0;
+					}
+					if (cos(i) >= 0 < 1)
+					{
+						enemies[i].dx = 0;
+					}
+					if (cos(i) == 1)
+					{
+						enemies[i].dx = 2;
+					}
 				}
-			}
 			wallstage1.update(deltatime);
 
 			//-----------Collision
@@ -226,8 +231,6 @@ int main()
 					enemies.erase(enemies.begin() + H);
 				}
 			}
-
-			window.clear();
 			Player1.update();
 			for (size_t i = 0; i < enemies.size(); i++)
 			{
@@ -235,8 +238,11 @@ int main()
 			}
 
 			Player1.move(deltatime);
-			wallstage1.draw(window);
 
+
+				
+			window.clear();
+			wallstage1.draw(window);
 			for (size_t i = 0; i < enemies.size(); i++)
 			{
 				enemies[i].draw(window);
@@ -250,6 +256,7 @@ int main()
 			window.draw(PlayerHP);
 			window.draw(HPointBar);
 			Player1.draw(window);
+			
 			if (cs == false)
 			{
 				Player1.spaceship01.move(0.0f, -2.5f);

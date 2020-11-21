@@ -145,9 +145,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Comet.cpp" />
     <ClCompile Include="comtet.cpp" />
     <ClCompile Include="EBullet.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="PBullet.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -156,8 +158,10 @@
     <ClCompile Include="wallstage1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Comet.h" />
     <ClInclude Include="EBullet.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="PBullet.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="resource.h" />
