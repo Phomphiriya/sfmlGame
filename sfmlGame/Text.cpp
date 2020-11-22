@@ -16,7 +16,7 @@ void Text::text_1(float number, sf::Vector2f position , sf::RenderWindow &window
 	stringstream num;
 	num << message << number  ;
 	text1.setPosition(position);
-	text1.setCharacterSize(20);
+	text1.setCharacterSize(15);
 	text1.Bold;
 	text1.setFillColor(sf::Color (224,67,54));
 	text1.setString(num.str());

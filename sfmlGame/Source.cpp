@@ -16,7 +16,7 @@
 
 const int W = 607;
 const int H = 1000;
-
+using namespace std;
 int main()
 {
 	sf::Clock clock;
@@ -25,7 +25,10 @@ int main()
 	PBullet PBullet1;
 	wallstage1 wallstage1;
 	Sound Sound;
-	Text Text0;
+	Text MenuText1;
+	Text MenuText2;
+	Text MenuText3;
+	Text MenuText4;
 	Text Text1;
 	Text Text2;
 	Text Text3;
@@ -41,10 +44,10 @@ int main()
 	sf::Sprite bossstage1(Boss1);*/
 
 	sf::Texture HPBar;
-	HPBar.loadFromFile("HP/HPYOU.png");
-	sf::RectangleShape HPointBar(sf::Vector2f(350.0f,45.0f));
+	HPBar.loadFromFile("HP/Heartjingna.png");
+	sf::RectangleShape HPointBar(sf::Vector2f(25.0f,25.0f));
 	HPointBar.setTexture(&HPBar);
-	HPointBar.setPosition(250, 10);
+	HPointBar.setPosition(20, 12);
 
 	//------------Gameover---------------------------
 	sf::Texture Gameover;
@@ -94,14 +97,30 @@ int main()
 	// Start game loop
 	bool check = false;
 	float count = 0;
-	int start = 0;
 	bool cs = false;
+	bool start = false;
+	bool menu = true;
+	float deltatime = 0;
+	bool c = false;
+	bool tom = false;
+
 	while (window.isOpen())
 	{
-		while (start == 0)
+		sf::Event e;
+		while (window.pollEvent(e));
+			{
+				if (e.type == e.Closed)
+				{
+					window.close();
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+				{
+					window.close();
+				}
+			}
+		
+		while (menu == true)
 		{
-			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
-			sf::Event e;
 			while (window.pollEvent(e));
 			{
 				if (e.type == e.Closed)
@@ -112,27 +131,39 @@ int main()
 				{
 					window.close();
 				}
-
 			}
 
+			TimeScore = 0;
+			deltatime = 0;
+			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			window.clear();
 			window.draw(Mainmenu);
-			Text0.text_3(sf::Vector2f(120.f, -10.f), window, (string)" START ", 300);
+			MenuText1.text_3(sf::Vector2f(140.f, -10.f), window, (string)"START", 310);
+			MenuText2.text_3(sf::Vector2f(140.f, -110.f), window, (string)"SCORE", 410);
+			MenuText3.text_3(sf::Vector2f(190.f, -210.f), window, (string)"QUIT", 510);
+
 			window.draw(cursorSprite);
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 			{
-				start = 1;
+				menu = false;
+				c = true;
+				start = true;
+				
 			}
 			window.display();
 		}
-		while (start == 1) 
+		while (start == true) 
 		{
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			sf::Event e;
-			float deltatime = clock.restart().asSeconds();
-			float totaltime = 0;
-			if(start != 0 )
-			TimeScore += deltatime;
+			deltatime = clock.restart().asSeconds();
+			if ((deltatime > 0 && c == true) || (TimeScore > 0 and c == true)) {
+				TimeScore = 0;
+				deltatime = 0;
+				c = false;
+			}
+			TimeScore = TimeScore+deltatime;
+
 			while (window.pollEvent(e));
 			{
 				if (e.type == e.Closed)
@@ -163,7 +194,6 @@ int main()
 			for (size_t i = 0; i < PBullets.size(); i++)
 			{
 				PBullets[i].PLaser.move(0.f, -8.f);
-
 			}
 
 			//-----------ENEMY
@@ -182,7 +212,7 @@ int main()
 				}
 				for (size_t i = 0; i < Comets.size(); i++)
 				{
-					Comets[i].Comet_obj.move(cos(i), 5.f);
+					Comets[i].Comet_obj.move(cos(i), 3.f);
 				}
 			}
 
@@ -264,12 +294,9 @@ int main()
 				}
 			}
 
-			int R = rand() % 1000;
-			int G = rand() % 1000;
-			int B = rand() % 1000;
-			sf::RectangleShape PlayerHP(sf::Vector2f(30.9 * HP, 30));
-			PlayerHP.setFillColor(sf::Color(R, G, B));
-			PlayerHP.setPosition(285, 18);
+			sf::RectangleShape PlayerHP(sf::Vector2f(18 * HP, 10));
+			PlayerHP.setFillColor(sf::Color(0, 137, 255));
+			PlayerHP.setPosition(40, 18);
 
 			for (size_t H = 0; H < enemies.size(); H++)
 			{
@@ -300,8 +327,6 @@ int main()
 			
 			Player1.move(deltatime);
 
-
-				
 			window.clear();
 			wallstage1.draw(window);
 			for (size_t i = 0; i < enemies.size(); i++)
@@ -326,12 +351,12 @@ int main()
 			{
 				Player1.spaceship01.move(0.0f, -2.5f);
 			}
-			if (TimeScore >= 3)
+			if (TimeScore >= 2)
 			{
 				cs = true;
 			}
-			Text1.text_1((int)TimeScore, sf::Vector2f(5.f, 15.f), window, (string)"Time Score : ");
-			Text2.text_1((int)EnemyKilled, sf::Vector2f(5.f, 40.f), window, (string)"Killed : ");
+			Text1.text_1((int)TimeScore, sf::Vector2f(410.f, 15.f), window, (string)"Time Score : ");
+			Text2.text_1((int)EnemyKilled, sf::Vector2f(410.f, 40.f), window, (string)"Killed : ");
 
 
 			if (HP <= 0)
@@ -339,7 +364,7 @@ int main()
 				Sound.intro.pause();
 				Sound.shoot_effect.pause();
 				window.clear();
-				start = 2;
+				start = false;
 				check = true;
 			}
 			window.display();
@@ -351,6 +376,7 @@ int main()
 		}
 		while (check == true)
 		{
+			
 			window.clear();
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			window.draw(Overicon);
