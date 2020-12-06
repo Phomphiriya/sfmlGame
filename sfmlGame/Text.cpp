@@ -49,22 +49,48 @@ void Text::text_2(float number, sf::Vector2f position, sf::RenderWindow& window,
 void Text::text_3(sf::Vector2f position, sf::RenderWindow& window, string message, float stop)
 {
 	text3.setFont(font);
-
-	if (!flag)
-	{
-		text3.setPosition(position);
-		flag = true;
-	}
+	text3.setCharacterSize(40);
+	text3.Bold;
 	stringstream num;
 	num << message;
-	text3.move(dx, dy);
-	text3.setCharacterSize(70);
-	text3.Bold;
-	text3.setFillColor(sf::Color(88, 111, 173));
 	text3.setString(num.str());
+	
+	if (!flag)
+	{	
+		text3.setPosition(position);
+		text3.setOrigin(getsize().x / 2, getsize().y / 2);
+		hitbox_menu.setOrigin(getsize().x / 2, getsize().y / 2);
+		flag = true;
+	}
+	//hitbox_menu.setSize(sf::Vector2f(text3.getGlobalBounds().width,text3.getGlobalBounds().height));
+	//hitbox_menu.setPosition(sf::Vector2f(text3.getPosition().x , text3.getPosition().y));
+	//hitbox_menu.setFillColor(sf::Color::Transparent);
+	//hitbox_menu.setOutlineThickness(1.f);
+	//hitbox_menu.setOutlineColor(sf::Color::White);
+	//hitbox_menu.setScale(getscale());
+
+	
+	text3.move(dx, dy);
 	if (text3.getPosition().y > stop)
 	{
 		dy = 0;
 	}
 	window.draw(text3);
+	window.draw(hitbox_menu);
+}
+void Text::text_4(sf::Vector2f position, sf::RenderWindow& window, string message, float stop)
+{
+	text4.setFont(font);
+	text4.setCharacterSize(65);
+	text4.setFillColor(sf::Color(88, 111, 173));
+	text4.Bold;
+	stringstream num;
+	num << message;
+	text4.setString(num.str());
+	text4.move(dx, dy);
+	if (text4.getPosition().y > stop)
+	{
+		dy = 0;
+	}
+	window.draw(text4);
 }

@@ -23,9 +23,13 @@ void Enemy::draw(sf::RenderWindow &window)
 	window.draw(HPbar);
 }
 
-void Enemy::update()
+void Enemy::update(const float &deltatime)
 {
 	HPbar.setSize(sf::Vector2f(15 * EnemyHP, 5));
 	HPbar.setPosition(sf::Vector2f(redship.getPosition().x+1, redship.getPosition().y-5));
 	redship.setTextureRect(sf::IntRect(enemyshipX * dx, enemyshipY*0, enemyshipX, enemyshipY));
+	if (dead)
+	{
+		lifetime -= 0.016;
+	}
 }

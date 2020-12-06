@@ -16,7 +16,6 @@
 
 const int W = 607;
 const int H = 1000;
-using namespace std;
 int main()
 {
 	sf::Clock clock;
@@ -34,14 +33,11 @@ int main()
 	Text Text3;
 	Text Text4;
 	Text Text5;
+	Text Text6;
 	Player Player1(sf::Vector2f(10.0, 10.0) ,W ,H , sf::Vector2f(280.0f,1000.0f));
 	sf::RenderWindow window(sf::VideoMode(W, H), "Adventure Time!", sf::Style::Close | sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
-	//sf::Texture
-	/*sf::Texture Boss1;
-	Boss1.loadFromFile("Spaceship/boos1new.png");
-	sf::Sprite bossstage1(Boss1);*/
 
 	sf::Texture HPBar;
 	HPBar.loadFromFile("HP/Heartjingna.png");
@@ -63,10 +59,16 @@ int main()
 	Mainmenu.setTexture(&Menu);
 	Mainmenu.setPosition(0, 0);
 
-	//-----------Boss
-	/*sf::Vector2f bossspawnPoint = { 120.f,-150.f };
-	bossstage1.setPosition(bossspawnPoint);
-	bossstage1.setScale(0.5, 0.5);*/
+	float i_story = 0;
+	float offset = 0;
+	float speed = 0.01;
+	float deltatime = 0;
+	sf::Texture comic1;
+	comic1.loadFromFile("Wallpaper/story.png");
+	sf::Sprite story1;
+	story1.setTexture(comic1);
+	
+
 	
 	//----------Enemy&Bullet
 	std::vector<Enemy> enemies;
@@ -92,17 +94,19 @@ int main()
 	Texture_Comet_big.loadFromFile("Spaceship/BigComet.png");
 	Texture_Comet_small.loadFromFile("Spaceship/SmallComet.png");
 
-	Sound.intro.play();
 
 	// Start game loop
-	bool check = false;
+	bool flag1 = false;
+	bool start_gameover = false;
 	float count = 0;
 	bool cs = false;
-	bool start = false;
+	bool start_game = false;
+	bool start_story = false;
+	bool start_story2 = false;
 	bool menu = true;
-	float deltatime = 0;
-	bool c = false;
-	bool tom = false;
+	
+	bool Timecheck = false;
+	bool flagsound = true;
 
 	while (window.isOpen())
 	{
@@ -118,7 +122,13 @@ int main()
 					window.close();
 				}
 			}
-		
+
+		//---------------------Menu state-----------------------------
+
+		if (menu == true)
+		{
+			Sound.Menusound.play();
+		}
 		while (menu == true)
 		{
 			while (window.pollEvent(e));
@@ -132,35 +142,148 @@ int main()
 					window.close();
 				}
 			}
-
+			
 			TimeScore = 0;
 			deltatime = 0;
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			window.clear();
 			window.draw(Mainmenu);
-			MenuText1.text_3(sf::Vector2f(140.f, -10.f), window, (string)"START", 310);
-			MenuText2.text_3(sf::Vector2f(140.f, -110.f), window, (string)"SCORE", 410);
-			MenuText3.text_3(sf::Vector2f(190.f, -210.f), window, (string)"QUIT", 510);
+			MenuText1.text_3(sf::Vector2f(window.getSize().x / 2, -10.f), window, (string)"START", 350);
+			MenuText2.text_3(sf::Vector2f(window.getSize().x / 2, -110.f), window, (string)"SCORE", 420);
+			MenuText3.text_3(sf::Vector2f(window.getSize().x / 2, -210.f), window, (string)"HOW TO PLAY", 490);
+			MenuText4.text_3(sf::Vector2f(window.getSize().x / 2, -310.f), window, (string)"QUIT", 560);
 
 			window.draw(cursorSprite);
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+
+			if (MenuText1.text3.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
-				menu = false;
-				c = true;
-				start = true;
+				MenuText1.text3.setFillColor(sf::Color(176, 52, 47));
+				MenuText1.text3.setScale(1.3, 1.3);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					menu = false;
+					Timecheck = true;
+					//start_game = true;
+					start_story = true;
+				}
 				
 			}
+			else
+			{
+				MenuText1.text3.setFillColor(sf::Color(88, 111, 173));
+				MenuText1.text3.setScale(1, 1);
+
+			}
+
+			if (MenuText2.text3.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				MenuText2.text3.setFillColor(sf::Color(176, 52, 47));
+				MenuText2.text3.setScale(1.3, 1.3);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					//Show Score
+				}
+			}
+			else
+			{
+				MenuText2.text3.setFillColor(sf::Color(88, 111, 173));
+				MenuText2.text3.setScale(1, 1);
+
+			}
+
+			if (MenuText3.text3.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				MenuText3.text3.setFillColor(sf::Color(176, 52, 47));
+				MenuText3.text3.setScale(1.3, 1.3);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					//show How to play
+				}
+			}
+			else
+			{
+				MenuText3.text3.setFillColor(sf::Color(88, 111, 173));
+				MenuText3.text3.setScale(1, 1);
+
+			}
+
+			if (MenuText4.text3.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				MenuText4.text3.setFillColor(sf::Color(176, 52, 47));
+				MenuText4.text3.setScale(1.3, 1.3);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					window.close();
+				}
+			}
+			else
+			{
+				MenuText4.text3.setFillColor(sf::Color(88, 111, 173));
+				MenuText4.text3.setScale(1, 1);
+
+			}
+
 			window.display();
 		}
-		while (start == true) 
+
+		//--------------------------------Story-------------------------------------
+
+
+		while (start_story == true)
+		{
+			if (window.pollEvent(e));
+			{
+				if (e.type == e.Closed)
+				{
+					window.close();
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+				{
+					window.close();
+				}
+			}
+			story1.setTextureRect(sf::IntRect(0, i_story ,comic1.getSize().x, comic1.getSize().y));
+			offset += 0.016;
+			if (offset >= speed)
+			{
+				i_story += 1;
+				offset -= speed;
+			}
+			if (i_story >= 780)
+			{
+				i_story = 780;
+			}
+			window.draw(story1);
+			window.draw(cursorSprite);
+			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
+			window.display();
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+			{
+				start_story = false;
+				start_game = true;
+			}
+		}
+
+
+		//--------------------------------GamePlay------------------------------------
+		if (start_game == true)
+		{
+			Sound.Menusound.stop();
+			Sound.intro.play();
+		}
+		while (start_game == true) 
 		{
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			sf::Event e;
 			deltatime = clock.restart().asSeconds();
-			if ((deltatime > 0 && c == true) || (TimeScore > 0 and c == true)) {
+			if ((deltatime > 0 && Timecheck == true) || (TimeScore > 0 and Timecheck == true)) {
 				TimeScore = 0;
 				deltatime = 0;
-				c = false;
+				Timecheck = false;
 			}
 			TimeScore = TimeScore+deltatime;
 
@@ -196,14 +319,15 @@ int main()
 				PBullets[i].PLaser.move(0.f, -8.f);
 			}
 
-			//-----------ENEMY
+			//-------------------------------ENEMY---------------------------------------------
+
 			if(cometSpawnTimer < 60 && cs == true)
 				cometSpawnTimer++;
 			{
 				if (cometSpawnTimer >= 60)
 				{
 					Comets.push_back(Comet(rand() % 2 , rand() % window.getSize().x , &Texture_Comet_big, &Texture_Comet_small));
-					cometSpawnTimer = 0;
+					cometSpawnTimer = 30;
 				}
 				for (size_t i = 0; i < Comets.size(); i++)
 				{
@@ -215,7 +339,6 @@ int main()
 					Comets[i].Comet_obj.move(cos(i), 3.f);
 				}
 			}
-
 			if (TimeScore >= 30)
 			{
 				if (enemySpawnTimer < 100 )
@@ -262,13 +385,16 @@ int main()
 					{
 						PBullets.erase(PBullets.begin() + i);
 						enemies[k].EnemyHP--;
-
-						if (enemies[k].EnemyHP == 0)
-						{
-							enemies.erase(enemies.begin() + k);
-							EnemyKilled++;
-						}
 						break;
+					}
+					if (enemies[k].EnemyHP <= 0 and !enemies[k].dead)
+					{
+						enemies[k].dead = true;
+					}
+					if (enemies[k].lifetime <= 0)
+					{
+						enemies.erase(enemies.begin() + k);
+						EnemyKilled++;
 					}
 
 				}
@@ -318,7 +444,7 @@ int main()
 			Player1.update();
 			for (size_t i = 0; i < enemies.size(); i++)
 			{
-				enemies[i].update();
+				enemies[i].update(deltatime);
 			}
 			for (size_t i = 0; i < Comets.size(); i++)
 			{
@@ -351,6 +477,7 @@ int main()
 			{
 				Player1.spaceship01.move(0.0f, -2.5f);
 			}
+
 			if (TimeScore >= 2)
 			{
 				cs = true;
@@ -364,24 +491,33 @@ int main()
 				Sound.intro.pause();
 				Sound.shoot_effect.pause();
 				window.clear();
-				start = false;
-				check = true;
+				start_game = false;
+				start_gameover = true;
 			}
+
+		if ((int)TimeScore == 80 and flagsound )
+		{
+				Sound.bosscoming.play(); 
+				flagsound = false;
+		}
+
 			window.display();
 		}
+
+		//-----------------------Gameover Menu-----------------------------
+
 		window.clear();
-		if (check == true)
+		if (start_gameover == true)
 		{
 			Sound.Game_over.play();
 		}
-		while (check == true)
+		while (start_gameover == true)
 		{
-			
 			window.clear();
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			window.draw(Overicon);
 			Text3.text_2((int)(EnemyKilled * TimeScore * 10), sf::Vector2f(260.f, 1080.f), window, (string)"Your score : " , 600);
-			Text4.text_3(sf::Vector2f(-20.f, -10.f), window, (string)" GAME OVER ", 480);
+			Text5.text_4(sf::Vector2f(window.getSize().x / 2, -10.f), window, (string)" GAME OVER ", 480);
 			window.draw(cursorSprite);
 			window.display();
 			sf::Event e;
