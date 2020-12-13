@@ -11,6 +11,7 @@
 #include "Enemy.h"
 #include "Comet.h"
 #include "PBullet.h"
+#include "EBullet.h"
 #include "wallstage1.h"
 #include <vector>
 
@@ -22,18 +23,24 @@ int main()
 	srand(time(NULL));
 	Enemy Enemy1(3);
 	PBullet PBullet1;
+	EBullet EBullet1;
 	wallstage1 wallstage1;
 	Sound Sound;
 	Text MenuText1;
 	Text MenuText2;
 	Text MenuText3;
 	Text MenuText4;
-	Text Text1;
-	Text Text2;
-	Text Text3;
-	Text Text4;
-	Text Text5;
-	Text Text6;
+	Text Textback_story;
+	Text Textplay_story;
+	Text Textback_htp;
+	Text Text_timescore;
+	Text Text_killed;
+	Text Text_yourscore;
+	Text Text_gameover;
+	Text Text_htp1;
+	Text Text_htp2;
+	Text Text_htp3;
+	Text Text_htp4;
 	Player Player1(sf::Vector2f(10.0, 10.0) ,W ,H , sf::Vector2f(280.0f,1000.0f));
 	sf::RenderWindow window(sf::VideoMode(W, H), "Adventure Time!", sf::Style::Close | sf::Style::Titlebar);
 	window.setFramerateLimit(60);
@@ -47,18 +54,19 @@ int main()
 
 	//------------Gameover---------------------------
 	sf::Texture Gameover;
-	Gameover.loadFromFile("wallpaper/Gameovermenu.png");
+	Gameover.loadFromFile("Wallpaper/Gameovermenu.png");
 	sf::RectangleShape Overicon(sf::Vector2f(607, 1000));
 	Overicon.setTexture(&Gameover);
 	Overicon.setPosition(0,0);
 
 	//------------MENU-----------------------
 	sf::Texture Menu;
-	Menu.loadFromFile("wallpaper/Gamemenu.png");
+	Menu.loadFromFile("Wallpaper/Gamemenu.png");
 	sf::RectangleShape Mainmenu(sf::Vector2f(607, 1000));
 	Mainmenu.setTexture(&Menu);
 	Mainmenu.setPosition(0, 0);
 
+	//-----------Story-------------------------------
 	float i_story = 0;
 	float offset = 0;
 	float speed = 0.01;
@@ -68,15 +76,25 @@ int main()
 	sf::Sprite story1;
 	story1.setTexture(comic1);
 	
+	//-----------How to play-------------------------
+	sf::Texture HTP;
+	HTP.loadFromFile("Wallpaper/Howtoplaynew.png");
+	sf::RectangleShape Howtoplay(sf::Vector2f(607, 1000));
+	Howtoplay.setTexture(&HTP);
+	Howtoplay.setPosition(0, 0);
+
 
 	
 	//----------Enemy&Bullet
 	std::vector<Enemy> enemies;
 	std::vector<PBullet> PBullets;
+	std::vector<EBullet> EBullets;
 	std::vector<Comet> Comets;
+
 	int enemySpawnTimer = 0;
 	int cometSpawnTimer = 0;
 	int shootTimer = 0;
+	int enemyshootingTime = 0;
 	int EnemyKilled = 0;
 	float TimeScore = 0;
 	int HP = 10;
@@ -102,11 +120,15 @@ int main()
 	bool cs = false;
 	bool start_game = false;
 	bool start_story = false;
-	bool start_story2 = false;
+	bool start_htp = false;
 	bool menu = true;
-	
 	bool Timecheck = false;
 	bool flagsound = true;
+	bool flag[10];
+	for (size_t i = 0; i <= 9; i++)
+	{
+		flag[i] = true;
+	}
 
 	while (window.isOpen())
 	{
@@ -164,9 +186,10 @@ int main()
 				{
 					menu = false;
 					Timecheck = true;
-					//start_game = true;
 					start_story = true;
 				}
+				if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) and flag[1])
+					flag[1] = true;
 				
 			}
 			else
@@ -183,7 +206,7 @@ int main()
 
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
-					//Show Score
+					// show score
 				}
 			}
 			else
@@ -200,7 +223,8 @@ int main()
 
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
-					//show How to play
+					menu = false;
+					start_htp = true;
 				}
 			}
 			else
@@ -232,7 +256,6 @@ int main()
 
 		//--------------------------------Story-------------------------------------
 
-
 		while (start_story == true)
 		{
 			if (window.pollEvent(e));
@@ -247,29 +270,104 @@ int main()
 				}
 			}
 			story1.setTextureRect(sf::IntRect(0, i_story ,comic1.getSize().x, comic1.getSize().y));
-			offset += 0.016;
+			offset += 0.005;
 			if (offset >= speed)
 			{
 				i_story += 1;
 				offset -= speed;
 			}
-			if (i_story >= 780)
+			if (i_story >= 720)
 			{
-				i_story = 780;
+				i_story = 720;
 			}
 			window.draw(story1);
 			window.draw(cursorSprite);
+			Textback_story.text_5(sf::Vector2f(20.f,3.f), window, (string)"Back");
+			Textplay_story.text_5(sf::Vector2f(480.f, 950.f), window, (string)"Play");
+
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
-			window.display();
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+			if (Textplay_story.text5.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
-				start_story = false;
-				start_game = true;
+				Textplay_story.text5.setFillColor(sf::Color(176, 52, 47));
+				Textplay_story.text5.setScale(1.3, 1.3);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					start_story = false;
+					start_game = true;
+				}
 			}
+			else
+			{
+				Textplay_story.text5.setFillColor(sf::Color(88, 111, 173));
+				Textplay_story.text5.setScale(1, 1);
+
+			}
+			if (Textback_story.text5.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				Textback_story.text5.setFillColor(sf::Color(176,52,47));
+				Textback_story.text5.setScale(1.3, 1.3);
+				if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					start_story = false;
+					menu = true;
+				}
+			}
+			else
+			{
+				Textback_story.text5.setFillColor(sf::Color(88, 111, 173));
+				Textback_story.text5.setScale(1, 1);
+
+			}
+			window.display();
+			
 		}
 
+		//--------------------------------How to play---------------------------------
+
+		while (start_htp == true)
+		{
+			if (window.pollEvent(e));
+			{
+				if (e.type == e.Closed)
+				{
+					window.close();
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+				{
+					window.close();
+				}
+			}
+			window.draw(Howtoplay);
+			Textback_htp.text_5(sf::Vector2f(20.f, 3.f), window, (string)"Back");
+			Text_htp1.text_6(sf::Vector2f(window.getSize().x / 2, 280.f), window, (string)"MOVE");
+			Text_htp2.text_6(sf::Vector2f(window.getSize().x / 2, 440.f), window, (string)"SHOOT");
+			Text_htp3.text_6(sf::Vector2f(window.getSize().x / 2, 610.f), window, (string)"ULTIMATE SKILL");
+			Text_htp4.text_6(sf::Vector2f(window.getSize().x / 2, 790.f), window, (string)"PAUSE GAME");
+			window.draw(cursorSprite);
+			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
+
+			if (Textback_htp.text5.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				Textback_htp.text5.setFillColor(sf::Color(176, 52, 47));
+				Textback_htp.text5.setScale(1.3, 1.3);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					start_htp = false;
+					menu = true;
+				}
+			}
+			else
+			{
+				Textback_htp.text5.setFillColor(sf::Color(88, 111, 173));
+				Textback_htp.text5.setScale(1, 1);
+
+			}
+			
+			window.display();
+		}
 
 		//--------------------------------GamePlay------------------------------------
+
 		if (start_game == true)
 		{
 			Sound.Menusound.stop();
@@ -277,6 +375,17 @@ int main()
 		}
 		while (start_game == true) 
 		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+			{
+
+				Sound.intro.pause();
+
+
+				start_game = false;
+				
+
+			}
+
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			sf::Event e;
 			deltatime = clock.restart().asSeconds();
@@ -299,7 +408,8 @@ int main()
 				}
 			}
 
-			//----------SHOOTING
+			//------------------------------------SHOOTING--------------------------------------------------
+
 			if (shootTimer < 20)
 				shootTimer++;
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && shootTimer >= 20)
@@ -316,7 +426,16 @@ int main()
 			}
 			for (size_t i = 0; i < PBullets.size(); i++)
 			{
+				//PBullets[i].PLaser.move(7.14, -3.57);
 				PBullets[i].PLaser.move(0.f, -8.f);
+			}
+			
+			//------------------------------------Ultimate Skill-----------------------------------------
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
+			{
+				Sound.shoot_effect.play();
+				PBullet1.update(Player1.spaceship01_position());
+				PBullets.push_back(PBullet(PBullet1));
 			}
 
 			//-------------------------------ENEMY---------------------------------------------
@@ -347,8 +466,8 @@ int main()
 				{
 					Enemy1.redship.setPosition(rand() % int((window.getSize().x - Enemy1.redship.getGlobalBounds().width) - Enemy1.redship.getGlobalBounds().width) + Enemy1.redship.getGlobalBounds().width, 0.f);
 					enemies.push_back(Enemy(Enemy1));
-
 					enemySpawnTimer = 0;
+
 				}
 				for (size_t i = 0; i < enemies.size(); i++)
 				{
@@ -372,6 +491,24 @@ int main()
 						enemies[i].dx = 2;
 					}
 				}
+				//-------------------holddddd
+				//if (enemyshootingTime < 100)
+					//enemyshootingTime++;
+				if (TimeScore >= 3 )
+				{
+					EBullet1.update(Enemy1.enemyship_position());
+					EBullets.push_back(EBullet(EBullet1));
+					enemyshootingTime = 0;
+				}
+				for (size_t o = 0; o < EBullets.size(); o++)
+				{
+					if (EBullets[o].ELaser.getPosition().y >= 607)
+						EBullets.erase(EBullets.begin() + o);
+				}
+				for (size_t o = 0; o < EBullets.size(); o++)
+				{
+					EBullets[o].ELaser.move(0.f, 3.f);
+				}
 			}
 
 			wallstage1.update(deltatime);
@@ -394,7 +531,7 @@ int main()
 					if (enemies[k].lifetime <= 0)
 					{
 						enemies.erase(enemies.begin() + k);
-						EnemyKilled++;
+						EnemyKilled += 5;
 					}
 
 				}
@@ -467,6 +604,10 @@ int main()
 			{
 				Comets[i].draw(window);
 			}
+			for (size_t i = 0; i < EBullets.size(); i++)
+			{
+				window.draw(EBullets[i].ELaser);
+			}
 
 			window.draw(cursorSprite);
 			window.draw(PlayerHP);
@@ -482,8 +623,8 @@ int main()
 			{
 				cs = true;
 			}
-			Text1.text_1((int)TimeScore, sf::Vector2f(410.f, 15.f), window, (string)"Time Score : ");
-			Text2.text_1((int)EnemyKilled, sf::Vector2f(410.f, 40.f), window, (string)"Killed : ");
+			Text_timescore.text_1((int)TimeScore, sf::Vector2f(410.f, 15.f), window, (string)"Time Score : ");
+			Text_killed.text_1((int)EnemyKilled, sf::Vector2f(410.f, 40.f), window, (string)"Killed : ");
 
 
 			if (HP <= 0)
@@ -516,8 +657,8 @@ int main()
 			window.clear();
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			window.draw(Overicon);
-			Text3.text_2((int)(EnemyKilled * TimeScore * 10), sf::Vector2f(260.f, 1080.f), window, (string)"Your score : " , 600);
-			Text5.text_4(sf::Vector2f(window.getSize().x / 2, -10.f), window, (string)" GAME OVER ", 480);
+			Text_yourscore.text_2((int)(EnemyKilled * TimeScore * 10), sf::Vector2f(260.f, 1080.f), window, (string)"Your score : " , 600);
+			Text_gameover.text_4(sf::Vector2f(window.getSize().x / 2, -10.f), window, (string)" GAME OVER ", 480);
 			window.draw(cursorSprite);
 			window.display();
 			sf::Event e;

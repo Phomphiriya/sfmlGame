@@ -1,7 +1,7 @@
 #include "Enemy.h"
 //#include "Enemy.h"
 
-Enemy::Enemy(int EnemyHP):EnemyHP(EnemyHP)
+Enemy::Enemy(int EnemyHP) :EnemyHP(EnemyHP)
 {
 	enemyship.loadFromFile("Spaceship/newenemy.png");
 	redship.setTexture(enemyship);
@@ -32,4 +32,9 @@ void Enemy::update(const float &deltatime)
 	{
 		lifetime -= 0.016;
 	}
+}
+//*
+const sf::Vector2f Enemy::enemyship_position()
+{
+	return sf::Vector2f(redship.getPosition());
 }

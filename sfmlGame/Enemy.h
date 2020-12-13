@@ -16,8 +16,13 @@ public:
 	float dy = 0;
 	bool dead = false;
 	float lifetime = 0.5;
+	//*
+	const sf::Vector2f enemyship_position();
+	const sf::Vector2f position() { return redship.getPosition(); };
 private:
 	sf::Texture enemyship;
 	sf::Texture explosion;
+	//*
+	sf::Vector2f enemyposition;
 };
 
