@@ -28,13 +28,14 @@ void Enemy::update(const float &deltatime)
 	HPbar.setSize(sf::Vector2f(15 * EnemyHP, 5));
 	HPbar.setPosition(sf::Vector2f(redship.getPosition().x+1, redship.getPosition().y-5));
 	redship.setTextureRect(sf::IntRect(enemyshipX * dx, enemyshipY*0, enemyshipX, enemyshipY));
-	if (dead)
-	{
-		lifetime -= 0.016;
-	}
+	
+	offsetBullet++;
 }
 //*
 const sf::Vector2f Enemy::enemyship_position()
 {
 	return sf::Vector2f(redship.getPosition());
+}
+void Enemy::setPosition(float x) {
+	return redship.setPosition(0,0);
 }

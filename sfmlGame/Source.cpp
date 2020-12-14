@@ -1,9 +1,16 @@
-#include<iostream>
-#include<SFML/Graphics.hpp>
-#include<SFML/Window.hpp>
+
+#include <SFML/Graphics.hpp>
 #include<SFML/System.hpp>
-#include<SFML/Audio.hpp>
-#include<math.h>
+#include <SFML/Audio.hpp>
+#include <iostream>
+#include "stdlib.h"
+#include <string>
+#include <sstream>
+#include <math.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
 #include<cstdlib>
 #include "Player.h"
 #include "Text.h"
@@ -17,9 +24,21 @@
 
 const int W = 607;
 const int H = 1000;
+bool sortbysecdesc(const std::pair<std::string, int>& a, const std::pair<std::string, int>& b)
+{
+	return a.second > b.second;
+}
 int main()
 {
+	std::ofstream fileWriter;
+	sf::String playerInput;
+
+	std::map<int, std::string> keepscore;
+	std::ifstream fileReader;
+	std::string word;
+
 	sf::Clock clock;
+	sf::Clock clock2;
 	srand(time(NULL));
 	Enemy Enemy1(3);
 	PBullet PBullet1;
@@ -41,6 +60,11 @@ int main()
 	Text Text_htp2;
 	Text Text_htp3;
 	Text Text_htp4;
+	Text Enter_score;
+	Text Textback_score;
+	Text Text_head_score;
+	Text Text_nameplayer;
+	Text Text_scoreplayer;
 	Player Player1(sf::Vector2f(10.0, 10.0) ,W ,H , sf::Vector2f(280.0f,1000.0f));
 	sf::RenderWindow window(sf::VideoMode(W, H), "Adventure Time!", sf::Style::Close | sf::Style::Titlebar);
 	window.setFramerateLimit(60);
@@ -59,6 +83,23 @@ int main()
 	Overicon.setTexture(&Gameover);
 	Overicon.setPosition(0,0);
 
+	sf::Font fontscore;
+	fontscore.loadFromFile("font/8bitnew.ttf");
+	std::ostringstream score;
+	sf::Text Score;
+	Score.setCharacterSize(20);
+	Score.setPosition({ 300.f,500.f });
+	Score.setString(score.str());
+	Score.setFont(fontscore);
+	Score.setFillColor(sf::Color(8, 72, 180));
+
+	std::ostringstream keyname;
+	sf::Text Keyname;
+	Keyname.setCharacterSize(20);
+	Keyname.setString("Keyname : ");
+	Keyname.setFont(fontscore);
+	Keyname.setFillColor(sf::Color(176, 52, 47));
+
 	//------------MENU-----------------------
 	sf::Texture Menu;
 	Menu.loadFromFile("Wallpaper/Gamemenu.png");
@@ -75,6 +116,20 @@ int main()
 	comic1.loadFromFile("Wallpaper/story.png");
 	sf::Sprite story1;
 	story1.setTexture(comic1);
+
+	//--------------Score-----------------------------
+	sf::Texture scoreim;
+	scoreim.loadFromFile("Wallpaper/Score.png");
+	sf::RectangleShape wallscore(sf::Vector2f(607, 1000));
+	wallscore.setTexture(&scoreim);
+	wallscore.setPosition(0, 0);
+
+	sf::Text text_showscore[12];
+	for(int s = 0; s<12; s++)
+	{
+		text_showscore[s].setFont(fontscore);
+		text_showscore[s].setCharacterSize(30);
+	}
 	
 	//-----------How to play-------------------------
 	sf::Texture HTP;
@@ -97,7 +152,7 @@ int main()
 	int enemyshootingTime = 0;
 	int EnemyKilled = 0;
 	float TimeScore = 0;
-	int HP = 10;
+	int HP = 1;
 
 	//------------mouse
 	sf::Texture mouse;
@@ -116,6 +171,7 @@ int main()
 	// Start game loop
 	bool flag1 = false;
 	bool start_gameover = false;
+	bool start_score = false;
 	float count = 0;
 	bool cs = false;
 	bool start_game = false;
@@ -125,6 +181,7 @@ int main()
 	bool Timecheck = false;
 	bool flagsound = true;
 	bool flag[10];
+	std::vector<std::pair<std::string, int>> vec;
 	for (size_t i = 0; i <= 9; i++)
 	{
 		flag[i] = true;
@@ -153,6 +210,7 @@ int main()
 		}
 		while (menu == true)
 		{
+			window.clear();
 			while (window.pollEvent(e));
 			{
 				if (e.type == e.Closed)
@@ -164,6 +222,7 @@ int main()
 					window.close();
 				}
 			}
+			
 			
 			TimeScore = 0;
 			deltatime = 0;
@@ -206,7 +265,36 @@ int main()
 
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
-					// show score
+					start_score = true;
+					menu = false;
+					std::string word;
+					std::ifstream ReadFile("keepscore.txt");
+					do {
+						ReadFile >> word;
+						std::string name = word.substr(0, word.find(','));
+						int num = std::stoi(word.substr(word.find(',') + 1, word.length()));
+						vec.push_back(std::make_pair(name, num));
+					} while (ReadFile.good());
+					ReadFile.close();
+					std::sort(vec.begin(), vec.end(), sortbysecdesc);
+					for (int i = 0; i < 5; i++)
+					{
+						text_showscore[2 * i + 2].setString(std::to_string(i + 1) + ". " + vec[i].first);
+						text_showscore[2 * i + 3].setString(std::to_string(vec[i].second));
+						text_showscore[0].setString("NAME");
+						text_showscore[0].setFillColor(sf::Color(176, 52, 47));
+						text_showscore[0].setPosition(80,180);
+						text_showscore[1].setString("SCORE");
+						text_showscore[1].setFillColor(sf::Color(176, 52, 47));
+						text_showscore[1].setPosition(390, 180);
+						std::cout << vec[i].first << "   " << vec[i].second << "\n";
+					}
+					for (int po = 0; po < 12; po += 2)
+					{
+						text_showscore[po].setPosition(70, 180 + po * 32);
+						text_showscore[po + 1].setPosition(380, 180 + po * 32);
+					}
+					vec.clear();
 				}
 			}
 			else
@@ -283,7 +371,7 @@ int main()
 			window.draw(story1);
 			window.draw(cursorSprite);
 			Textback_story.text_5(sf::Vector2f(20.f,3.f), window, (string)"Back");
-			Textplay_story.text_5(sf::Vector2f(480.f, 950.f), window, (string)"Play");
+			Textplay_story.text_5(sf::Vector2f(480.f, 3.f), window, (string)"Play");
 
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			if (Textplay_story.text5.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
@@ -292,8 +380,10 @@ int main()
 				Textplay_story.text5.setScale(1.3, 1.3);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
+					
 					start_story = false;
 					start_game = true;
+
 				}
 			}
 			else
@@ -321,6 +411,51 @@ int main()
 			window.display();
 			
 		}
+		//----------------------------------Score-------------------------------------
+
+		while (start_score == true)
+		{
+			if (window.pollEvent(e));
+			{
+				if (e.type == e.Closed)
+				{
+					window.close();
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+				{
+					window.close();
+				}
+			}
+
+			window.draw(wallscore);
+			Textback_score.text_5(sf::Vector2f(20.f, 3.f), window, (string)"Back");
+			Text_head_score.text_6(sf::Vector2f(155.f, 100.f), window, (string)"LEADERBOARD");
+			window.draw(cursorSprite);
+			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
+			for (int i = 0; i < 12; i++)
+			{
+				window.draw(text_showscore[i]);
+			}
+		
+			if (Textback_score.text5.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				Textback_score.text5.setFillColor(sf::Color(176, 52, 47));
+				Textback_score.text5.setScale(1.3, 1.3);
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					start_score = false;
+					menu = true;
+				}
+			}
+			else
+			{
+				Textback_score.text5.setFillColor(sf::Color(88, 111, 173));
+				Textback_score.text5.setScale(1, 1);
+
+			}
+
+			window.display();
+		}
 
 		//--------------------------------How to play---------------------------------
 
@@ -339,10 +474,10 @@ int main()
 			}
 			window.draw(Howtoplay);
 			Textback_htp.text_5(sf::Vector2f(20.f, 3.f), window, (string)"Back");
-			Text_htp1.text_6(sf::Vector2f(window.getSize().x / 2, 280.f), window, (string)"MOVE");
-			Text_htp2.text_6(sf::Vector2f(window.getSize().x / 2, 440.f), window, (string)"SHOOT");
-			Text_htp3.text_6(sf::Vector2f(window.getSize().x / 2, 610.f), window, (string)"ULTIMATE SKILL");
-			Text_htp4.text_6(sf::Vector2f(window.getSize().x / 2, 790.f), window, (string)"PAUSE GAME");
+			Text_htp1.text_6(sf::Vector2f(245.f, 280.f), window, (string)"MOVE");
+			Text_htp2.text_6(sf::Vector2f(231.f, 440.f), window, (string)"SHOOT");
+			Text_htp3.text_6(sf::Vector2f(130.f, 610.f), window, (string)"ULTIMATE SKILL");
+			Text_htp4.text_6(sf::Vector2f(170.f, 790.f), window, (string)"PAUSE GAME");
 			window.draw(cursorSprite);
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 
@@ -382,8 +517,6 @@ int main()
 
 
 				start_game = false;
-				
-
 			}
 
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
@@ -439,7 +572,8 @@ int main()
 			}
 
 			//-------------------------------ENEMY---------------------------------------------
-
+			cout << Comets.size() <<endl;
+			
 			if(cometSpawnTimer < 60 && cs == true)
 				cometSpawnTimer++;
 			{
@@ -458,7 +592,7 @@ int main()
 					Comets[i].Comet_obj.move(cos(i), 3.f);
 				}
 			}
-			if (TimeScore >= 30)
+			if (TimeScore >= 3)
 			{
 				if (enemySpawnTimer < 100 )
 					enemySpawnTimer++;
@@ -471,12 +605,15 @@ int main()
 				}
 				for (size_t i = 0; i < enemies.size(); i++)
 				{
-					if (enemies[i].redship.getPosition().y > window.getSize().y)
+					if (enemies[i].redship.getPosition().y > window.getSize().y) {
+
 						enemies.erase(enemies.begin() + i);
+					}
+						
 				}
 				for (size_t i = 0; i < enemies.size(); i++)
 				{
-					enemies[i].redship.move(cos(i), 5.f);
+					enemies[i].redship.move(cos(i), 2.5f);
 					//std::cout << cos(i) << std::endl;
 					if (cos(i) <= 0)
 					{
@@ -491,23 +628,28 @@ int main()
 						enemies[i].dx = 2;
 					}
 				}
-				//-------------------holddddd
-				//if (enemyshootingTime < 100)
-					//enemyshootingTime++;
+				//-------------------Enemy bullet
 				if (TimeScore >= 3 )
 				{
-					EBullet1.update(Enemy1.enemyship_position());
-					EBullets.push_back(EBullet(EBullet1));
-					enemyshootingTime = 0;
+					for (size_t i = 0; i < enemies.size(); i++)
+					{
+						if (enemies[i].offsetBullet >= 40)
+						{
+							EBullet1.update(enemies[i].getCenter());
+							EBullets.push_back(EBullet(EBullet1));
+							enemies[i].offsetBullet = 0;
+						}
+					}
 				}
+
 				for (size_t o = 0; o < EBullets.size(); o++)
 				{
-					if (EBullets[o].ELaser.getPosition().y >= 607)
+					if (EBullets[o].ELaser.getPosition().y >= 1000)
 						EBullets.erase(EBullets.begin() + o);
 				}
 				for (size_t o = 0; o < EBullets.size(); o++)
 				{
-					EBullets[o].ELaser.move(0.f, 3.f);
+					EBullets[o].ELaser.move(0.f, 8.f);
 				}
 			}
 
@@ -524,11 +666,7 @@ int main()
 						enemies[k].EnemyHP--;
 						break;
 					}
-					if (enemies[k].EnemyHP <= 0 and !enemies[k].dead)
-					{
-						enemies[k].dead = true;
-					}
-					if (enemies[k].lifetime <= 0)
+					if (enemies[k].EnemyHP <= 0 )
 					{
 						enemies.erase(enemies.begin() + k);
 						EnemyKilled += 5;
@@ -575,6 +713,14 @@ int main()
 				{
 					HP--;
 					Comets.erase(Comets.begin() + H);
+				}
+			}
+			for (size_t H = 0; H < EBullets.size(); H++)
+			{
+				if (Player1.spaceship01.getGlobalBounds().intersects(EBullets[H].ELaser.getGlobalBounds()))
+				{
+					HP--;
+					EBullets.erase(EBullets.begin() + H);
 				}
 			}
 
@@ -651,16 +797,31 @@ int main()
 		if (start_gameover == true)
 		{
 			Sound.Game_over.play();
+			Player1.spaceship01.setPosition(sf::Vector2f(280, 1000));
+			cs = false;
 		}
 		while (start_gameover == true)
 		{
-			window.clear();
+			for (size_t i = 0; i < Comets.size(); i++)
+			{
+					Comets.erase(Comets.begin() + i);
+			}
+			for (size_t i = 0; i < enemies.size(); i++)
+			{
+				enemies.erase(enemies.begin() + i);
+			}
+			for (size_t i = 0; i < EBullets.size(); i++)
+			{
+				EBullets.erase(EBullets.begin() + i);
+			}
+			 
+			start_score = true;
 			cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			window.draw(Overicon);
-			Text_yourscore.text_2((int)(EnemyKilled * TimeScore * 10), sf::Vector2f(260.f, 1080.f), window, (string)"Your score : " , 600);
-			Text_gameover.text_4(sf::Vector2f(window.getSize().x / 2, -10.f), window, (string)" GAME OVER ", 480);
+			Text_yourscore.text_2((int)(EnemyKilled * TimeScore), sf::Vector2f(100.f, 1020.f), window, (string)"Your score : " , 520);
+			Text_gameover.text_4(sf::Vector2f(window.getSize().x / 2, -10.f), window, (string)" GAME OVER ", 410);
 			window.draw(cursorSprite);
-			window.display();
+			//window.display();
 			sf::Event e;
 			while (window.pollEvent(e));
 			{
@@ -673,6 +834,63 @@ int main()
 					window.close();
 				}
 			}
+				
+				sf::Event event;
+
+				Keyname.setPosition(137, 565);
+				sf::Text text("", fontscore);
+				text.setFillColor(sf::Color::Cyan);
+				text.setString(playerInput);
+				text.setPosition(290, 560);
+				window.draw(text);
+				window.draw(Keyname);
+				window.display();
+				while (window.pollEvent(event))
+				{
+
+					if (event.type == sf::Event::Closed)
+						window.close();
+				}
+				if (event.type == sf::Event::TextEntered && start_score == true && clock2.getElapsedTime().asSeconds() >= 0.2f)
+				{
+					clock2.restart();
+					if (event.text.unicode == 13) 
+					{ //enter
+						fileWriter.open("keepscore.txt", std::ios::out | std::ios::app);
+						fileWriter << "\n" << playerInput.toAnsiString() << "," << EnemyKilled * TimeScore;
+						fileWriter.close();
+						playerInput.clear();
+						menu = true;
+						start_game = false;
+						EnemyKilled = 0;
+						TimeScore = 0;
+						HP = 10;
+
+					}
+					if (event.text.unicode == 8)
+					{ //backspace
+						playerInput = playerInput.substring(0, playerInput.getSize() - 1);
+					}
+					else
+					{
+						if (playerInput.getSize() < 10 );
+						{
+								playerInput += event.text.unicode;
+								
+						}
+					}
+
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+					{
+
+						start_gameover = false;
+						start_score = false;
+						menu = true;
+
+					}
+
+					
+				}
 		}
 		window.display();
 	}

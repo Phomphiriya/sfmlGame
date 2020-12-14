@@ -119,7 +119,7 @@ void Text::text_6(sf::Vector2f position, sf::RenderWindow& window, string messag
 	stringstream num;
 	num << message;
 	text6.setString(num.str());
-	text6.setPosition(position);
 	text6.setOrigin(getsize().x / 2, getsize().y / 2);
+	text6.setPosition(position);
 	window.draw(text6);
 }
