@@ -15,6 +15,7 @@ public:
 public:
 	float dx = 0;
 	float dy = 0;
+	float speed = 200;
 
 private:
 	sf::Texture ship;
@@ -22,6 +23,5 @@ private:
 	int W;
 	int H;
 	
-	float speed = 200;
 	sf::Vector2f movement;
 };

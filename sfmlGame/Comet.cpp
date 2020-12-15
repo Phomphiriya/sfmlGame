@@ -2,7 +2,7 @@
 
 Comet::Comet( bool SL, float spawnX, sf::Texture* texture1, sf::Texture* texture2)
 {
-	
+	typecomet = SL;
 	if (SL)
 	{
 		Comet_obj.setTexture(*texture1);

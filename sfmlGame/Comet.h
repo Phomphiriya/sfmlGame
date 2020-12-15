@@ -5,6 +5,7 @@ class Comet
 public:
 	Comet(bool SL , float spawnX , sf::Texture *texture1 , sf::Texture* texture2);
 	~Comet();
+	bool typecomet;
 	sf::RectangleShape HPbar;
 	sf::Sprite Comet_obj;
 	void draw(sf::RenderWindow& window);
@@ -20,3 +21,4 @@ private:
 
 };
 
+//items[i].typeitems;

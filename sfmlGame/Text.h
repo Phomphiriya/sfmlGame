@@ -12,6 +12,8 @@ public:
 	sf::Text text4; // Game over
 	sf::Text text5; // back or play
 	sf::Text text6; // use in how to play 
+	sf::Text text7; // use in pause menu
+	sf::Text text8; // items show
 	Text();
 	~Text();
 	void text_1(float number, sf::Vector2f position, sf::RenderWindow& window , string message);
@@ -23,6 +25,8 @@ public:
 	void text_4(sf::Vector2f position, sf::RenderWindow& window, string message, float stop);
 	void text_5(sf::Vector2f position, sf::RenderWindow& window, string message);
 	void text_6(sf::Vector2f position, sf::RenderWindow& window, string message);
+	void text_7(sf::Vector2f position, sf::RenderWindow& window, string message);
+	void text_8(float number, sf::Vector2f position, sf::RenderWindow& window, string message, sf::Vector3i color);
 
 private:
 	sf::Font font;
